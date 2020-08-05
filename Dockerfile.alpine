@@ -1,0 +1,72 @@
+FROM alpine:latest
+
+ENV RSTUDIO_DISABLE_CRASHPAD=1
+
+RUN apk add --no-cache --upgrade \
+    boost-dev \
+    bzip2-dev \
+    clang-dev \
+    expect \
+    fakeroot \
+    fuse \
+    gcc \
+    git \
+    gtk+3.0 \
+    openjdk8 \
+    curl-dev \
+    acl-dev \
+    libcap-dev \
+    libuuid \
+    libxcursor-dev\
+    libxscrnsaver-dev \
+    llvm10-dev \
+    lsof \
+    make \
+    openssl-dev \
+    p7zip \
+    pango-dev \
+    patchelf \
+    postgresql-dev \
+    python2 \
+    sudo \
+    valgrind \
+    wget \
+    zlib-dev \
+    cmake \
+    musl-dev \
+    g++ \
+    linux-pam \
+    linux-pam-dev \
+    R-dev \
+    bash \
+    grep \
+    python3 \
+    apache-ant \
+    curl \
+    R \
+    libexecinfo-dev \
+    linux-headers \
+    build-base
+
+RUN adduser rstudio -D
+
+WORKDIR /home/rstudio/
+ADD https://github.com/rstudio/rstudio/tarball/v1.3.1056 rstudio.tar.gz
+RUN mkdir -p /opt/rstudio-tools/
+
+RUN chown -R rstudio:rstudio /home/rstudio/ /opt/rstudio-tools/
+RUN echo "rstudio ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+    echo "#include <unistd.h>" > /usr/include/sys/unistd.h
+
+USER rstudio
+
+RUN tar -xvzf rstudio.tar.gz
+
+RUN cd rstudio-rstudio-*/ && \
+    cd ./dependencies/common/ && \
+    bash ./install-common && \
+    cd ../../ && \
+    mkdir build && \
+    cd build && \
+    cmake .. -DRSTUDIO_TARGET=Server -DCMAKE_BUILD_TYPE=Release && \
+    make install
