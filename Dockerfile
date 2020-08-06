@@ -9,12 +9,15 @@ ENV R_DEPS devtools bestglm glmnet stringr tidyr V8
 ENV R_PKGS bizdays boot cluster colorspace data.table deseasonalize DiagrammeR DiagrammeRsvg dplyr DT dyn feather \
 flexdashboard forcats forecast ggplot2 googleVis Hmisc htmltools htmlwidgets intervals kableExtra knitr lazyeval \
 leaflet lubridate magrittr manipulate maps networkD3 plotly plyr RColorBrewer readr reshape reshape2 reticulate \
-rjson RJSONIO rmarkdown rmongodb RODBC scales shiny sparklyr sqldf stringr tidyr timeDate webshot xtable YaleToolkit zo
+rjson RJSONIO rmarkdown rmongodb RODBC scales shiny sparklyr sqldf stringr tidyr timeDate webshot xtable YaleToolkit zo \
+aws.s3 aws.ec2metadata
 
-RUN apt-get -y update  && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd \
-    unixodbc-dev libbz2-dev libgsl-dev odbcinst libx11-dev mesa-common-dev libglu1-mesa-dev \
-    gdal-bin proj-bin libgdal-dev libproj-dev libudunits2-dev libtcl8.6 libtk8.6 libgtk2.0-dev && \
+RUN apt-get -y update  && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
+    unixodbc-dev libbz2-dev libgsl-dev odbcinst libx11-dev mesa-common-dev libglu1-mesa-dev git-core \
+    gdal-bin proj-bin libgdal-dev libproj-dev libudunits2-dev libtcl8.6 libtk8.6 libgtk2.0-dev stunnel && \
     apt-get clean
+
+RUN pip3 install --upgrade git-remote-codecommit
 
 RUN cd /tmp && \
     wget --no-verbose https://downloads.cloudera.com/connectors/impala_odbc_2.5.41.1029/Debian/clouderaimpalaodbc_2.5.41.1029-2_amd64.deb && \
@@ -47,5 +50,14 @@ RUN mkdir -p /home/rstudio && \
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 ENV DEBIAN_FRONTEND noninteractive
+
+ADD stunnel.conf /etc/stunnel/stunnel.conf
+
+RUN echo "#!/bin/bash" > /etc/cont-init.d/gen-certs && \
+    echo "/usr/bin/openssl req -x509 -newkey rsa:4096 -keyout /etc/stunnel/stunnel.pem -out /etc/stunnel/stunnel.pem -days 30 -nodes -subj '/CN=rstudio'" >> /etc/cont-init.d/gen-certs && \
+    chmod +x /etc/cont-init.d/gen-certs
+RUN mkdir -p /etc/services.d/stunnel/ && \
+    echo '#!/bin/bash' > /etc/services.d/stunnel/run && \
+    echo 'exec stunnel' >> /etc/services.d/stunnel/run
 
 CMD ["/init"]
