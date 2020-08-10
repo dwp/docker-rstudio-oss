@@ -5,6 +5,9 @@ USER root
 ENV APACHE_SPARK_VERSION 2.4.5
 ENV HADOOP_VERSION 2.7
 
+ENV USER_PERSISTED_VARS AWS_CONTAINER_CREDENTIALS_RELATIVE_URI AWS_DEFAULT_REGION AWS_EXECUTION_ENV AWS_REGION \
+    ECS_CONTAINER_METADATA_URI S3_BUCKET USER KMS_HOME KMS_SHARED
+
 ENV R_DEPS devtools bestglm glmnet stringr tidyr V8
 ENV R_PKGS bizdays boot cluster colorspace data.table deseasonalize DiagrammeR DiagrammeRsvg dplyr DT dyn feather \
 flexdashboard forcats forecast ggplot2 googleVis Hmisc htmltools htmlwidgets intervals kableExtra knitr lazyeval \
@@ -56,6 +59,11 @@ ADD stunnel.conf /etc/stunnel/stunnel.conf
 RUN echo "#!/bin/bash" > /etc/cont-init.d/gen-certs && \
     echo "/usr/bin/openssl req -x509 -newkey rsa:4096 -keyout /etc/stunnel/stunnel.pem -out /etc/stunnel/stunnel.pem -days 30 -nodes -subj '/CN=rstudio'" >> /etc/cont-init.d/gen-certs && \
     chmod +x /etc/cont-init.d/gen-certs
+
+RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container && \
+    for var in ${USER_PERSISTED_VARS}; do echo "echo \"${var}=\${${var}}\" >> /usr/local/lib/R/etc/Renviron" >> /etc/cont-init.d/bootstrap_container; done && \
+    chmod +x /etc/cont-init.d/bootstrap_container
+
 RUN mkdir -p /etc/services.d/stunnel/ && \
     echo '#!/bin/bash' > /etc/services.d/stunnel/run && \
     echo 'exec stunnel' >> /etc/services.d/stunnel/run
