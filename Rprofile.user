@@ -1,0 +1,5 @@
+get_spark <- function(){
+    conf <- spark_config(file = paste0("/home/", Sys.getenv("USER"), "/.spark_config.yml"))
+    conf <- livy_config(config = conf, proxy_user = Sys.getenv("USER"), executorCores = 2)
+    spark_connect(method = "livy", version = "2.4.4" , config = conf)
+}

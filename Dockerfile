@@ -6,7 +6,7 @@ ENV APACHE_SPARK_VERSION 2.4.5
 ENV HADOOP_VERSION 2.7
 
 ENV USER_PERSISTED_VARS AWS_CONTAINER_CREDENTIALS_RELATIVE_URI AWS_DEFAULT_REGION AWS_EXECUTION_ENV AWS_REGION \
-    ECS_CONTAINER_METADATA_URI S3_BUCKET USER KMS_HOME KMS_SHARED
+    ECS_CONTAINER_METADATA_URI S3_BUCKET USER KMS_HOME KMS_SHARED EMR_HOST_NAME
 
 ENV R_DEPS devtools bestglm glmnet stringr tidyr V8
 ENV R_PKGS bizdays boot cluster colorspace data.table deseasonalize DiagrammeR DiagrammeRsvg dplyr DT dyn feather \
@@ -16,7 +16,7 @@ rjson RJSONIO rmarkdown rmongodb RODBC scales shiny sparklyr sqldf stringr tidyr
 aws.s3 aws.ec2metadata
 
 RUN apt-get -y update  && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
-    unixodbc-dev libbz2-dev libgsl-dev odbcinst libx11-dev mesa-common-dev libglu1-mesa-dev git-core \
+    unixodbc-dev libbz2-dev libgsl-dev odbcinst libx11-dev mesa-common-dev libglu1-mesa-dev git-core s3fs \
     gdal-bin proj-bin libgdal-dev libproj-dev libudunits2-dev libtcl8.6 libtk8.6 libgtk2.0-dev stunnel && \
     apt-get clean
 
@@ -62,10 +62,15 @@ RUN echo "#!/bin/bash" > /etc/cont-init.d/gen-certs && \
 
 RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container && \
     for var in ${USER_PERSISTED_VARS}; do echo "echo \"${var}=\${${var}}\" >> /usr/local/lib/R/etc/Renviron" >> /etc/cont-init.d/bootstrap_container; done && \
+    echo "sed -i 's/REPLACEME/'\${EMR_HOST_NAME}'/g' /etc/skel/.spark_config.yml" >> /etc/cont-init.d/bootstrap_container && \
     chmod +x /etc/cont-init.d/bootstrap_container
 
 RUN mkdir -p /etc/services.d/stunnel/ && \
     echo '#!/bin/bash' > /etc/services.d/stunnel/run && \
-    echo 'exec stunnel' >> /etc/services.d/stunnel/run
+    echo 'exec stunnel' >> /etc/services.d/stunnel/run && \
+    sed -i '2iUSERID=\$(/usr/bin/shuf -i 1001-30000 -n 1)' /etc/cont-init.d/userconf
+
+ADD user_spark_config.yml /etc/skel/.spark_config.yml
+ADD Rprofile.user /etc/skel/.Rprofile
 
 CMD ["/init"]
