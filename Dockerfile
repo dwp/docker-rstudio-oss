@@ -2,7 +2,7 @@ FROM rocker/tidyverse:3.6.3
 
 USER root
 
-ENV APACHE_SPARK_VERSION 2.4.5
+ENV APACHE_SPARK_VERSION 2.4.4
 ENV HADOOP_VERSION 2.7
 
 ENV USER_PERSISTED_VARS AWS_CONTAINER_CREDENTIALS_RELATIVE_URI AWS_DEFAULT_REGION AWS_EXECUTION_ENV AWS_REGION \
@@ -12,7 +12,7 @@ ENV R_DEPS devtools bestglm glmnet stringr tidyr V8
 ENV R_PKGS bizdays boot cluster colorspace data.table deseasonalize DiagrammeR DiagrammeRsvg dplyr DT dyn feather \
 flexdashboard forcats forecast ggplot2 googleVis Hmisc htmltools htmlwidgets intervals kableExtra knitr lazyeval \
 leaflet lubridate magrittr manipulate maps networkD3 plotly plyr RColorBrewer readr reshape reshape2 reticulate \
-rjson RJSONIO rmarkdown rmongodb RODBC scales shiny sparklyr sqldf stringr tidyr timeDate webshot xtable YaleToolkit zo \
+rjson RJSONIO rmarkdown rmongodb RODBC scales shiny sqldf stringr tidyr timeDate webshot xtable YaleToolkit zo \
 aws.s3 aws.ec2metadata
 
 RUN apt-get -y update  && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
