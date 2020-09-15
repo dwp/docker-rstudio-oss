@@ -4,3 +4,4 @@ get_spark <- function(){
     conf <- livy_config(conf = conf, proxy_user = Sys.getenv("USER"), executor_cores = 2)
     spark_connect(method = "livy", version = "2.4.4" , config = conf)
 }
+
