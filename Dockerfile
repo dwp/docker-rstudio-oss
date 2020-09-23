@@ -63,12 +63,13 @@ RUN echo "#!/bin/bash" > /etc/cont-init.d/gen-certs && \
 RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container && \
     for var in ${USER_PERSISTED_VARS}; do echo "echo \"${var}=\${${var}}\" >> /usr/local/lib/R/etc/Renviron" >> /etc/cont-init.d/bootstrap_container; done && \
     echo "sed -i 's/REPLACEME/'\${EMR_HOST_NAME}'/g' /etc/skel/.spark_config.yml" >> /etc/cont-init.d/bootstrap_container && \
+    echo "ln -s /mnt/s3fs /home/\${USER}/s3" \
     chmod +x /etc/cont-init.d/bootstrap_container
 
 RUN mkdir -p /etc/services.d/stunnel/ && \
     echo '#!/bin/bash' > /etc/services.d/stunnel/run && \
     echo 'exec stunnel' >> /etc/services.d/stunnel/run && \
-    sed -i '2iUSERID=\$(/usr/bin/shuf -i 1001-30000 -n 1)' /etc/cont-init.d/userconf
+    sed -i '2iUSERID=\1001' /etc/cont-init.d/userconf
 
 ADD user_spark_config.yml /etc/skel/.spark_config.yml
 ADD Rprofile.user /etc/skel/.Rprofile
