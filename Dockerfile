@@ -63,7 +63,7 @@ RUN echo "#!/bin/bash" > /etc/cont-init.d/gen-certs && \
 RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container && \
     for var in ${USER_PERSISTED_VARS}; do echo "echo \"${var}=\${${var}}\" >> /usr/local/lib/R/etc/Renviron" >> /etc/cont-init.d/bootstrap_container; done && \
     echo "sed -i 's/REPLACEME/'\${EMR_HOST_NAME}'/g' /etc/skel/.spark_config.yml" >> /etc/cont-init.d/bootstrap_container && \
-    echo "ln -s /mnt/s3fs /home/\${USER}/s3" \
+    echo "ln -s /mnt/s3fs /home/\${USER}/s3" >> /etc/cont-init.d/bootstrap_container && \
     chmod +x /etc/cont-init.d/bootstrap_container
 
 RUN mkdir -p /etc/services.d/stunnel/ && \
