@@ -64,7 +64,7 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
     for var in ${USER_PERSISTED_VARS}; do echo "echo \"${var}=\${${var}}\" >> /usr/local/lib/R/etc/Renviron" >> /etc/cont-init.d/bootstrap_container; done && \
     echo "sed -i 's/REPLACEME/'\${EMR_HOST_NAME}'/g' /etc/skel/.spark_config.yml" >> /etc/cont-init.d/bootstrap_container && \
     chmod +x /etc/cont-init.d/bootstrap_container && \
-    sed -i '68s?.*?    ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/userconf && \
+    sed -i '?cp -r /home/rstudio .*?ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/userconf && \
     chmod +x /etc/cont-init.d/userconf
 
 RUN mkdir -p /etc/services.d/stunnel/ && \
