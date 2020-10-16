@@ -65,6 +65,18 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
     echo "sed -i 's/REPLACEME/'\${EMR_HOST_NAME}'/g' /etc/skel/.spark_config.yml" >> /etc/cont-init.d/bootstrap_container && \
     chmod +x /etc/cont-init.d/bootstrap_container && \
     sed -i 's?cp -r /home/rstudio .*?ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/userconf && \
+    sed -i '/useradd -m $USER -u $USERID/,/mkdir/c\
+\    \# Link S3 home directory instead of creating directory.\n\
+    \# and add missing skeleton files\n\
+    useradd -M $USER -u $USERID\n\
+    ln -s /mnt/s3fs/s3-home /home/$USER\n\
+    for f in `ls -1A /etc/skel`\n\
+    do\n\
+      cp -n /etc/skel/$f /home/$USER\n\
+      chown $USER /home/$USER/$f\n\
+    done\n\
+    \# End of changes\n\
+' /etc/cont-init.d/userconf && \
     chmod +x /etc/cont-init.d/userconf
 
 RUN mkdir -p /etc/services.d/stunnel/ && \
