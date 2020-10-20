@@ -75,6 +75,9 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
       cp -n /etc/skel/$f /home/$USER\n\
       chown $USER /home/$USER/$f\n\
     done\n\
+\    \# special case for config files\n\
+    cp -f /etc/skel/.spark_config.yml /home/$USER\n\
+    chown $USER /home/$USER/.spark_config.yml\n\
     \# End of changes\n\
 ' /etc/cont-init.d/userconf && \
     chmod +x /etc/cont-init.d/userconf
