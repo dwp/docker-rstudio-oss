@@ -1,5 +1,5 @@
 default:
   livy.session.start.timeout: 120
-  spark.master: "http://REPLACEME:8998"
+  spark.master: "REPLACEME"
   sparklyr.livy.jar: ""
 
