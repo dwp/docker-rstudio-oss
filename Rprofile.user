@@ -3,8 +3,6 @@ get_spark <- function(){
     httr::set_config(httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
     conf <- spark_config(file = paste0("/home/", Sys.getenv("USER"), "/.spark_config.yml"))
     conf <- livy_config(conf = conf, proxy_user = Sys.getenv("USER"), executor_cores = 2, custom_headers = list(`Authorization` = Sys.getenv("JWT_TOKEN")))
-    sc <- spark_connect(method = "livy", version = "2.4.4" , config = conf)
-    httr::set_config(httr::config(ssl_verifypeer = 1L, ssl_verifyhost = 1L))
-    sc
+    spark_connect(method = "livy", version = "2.4.4" , config = conf)
 }
 
