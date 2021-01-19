@@ -85,7 +85,8 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
 RUN mkdir -p /etc/services.d/stunnel/ && \
     echo '#!/bin/bash' > /etc/services.d/stunnel/run && \
     echo 'exec stunnel' >> /etc/services.d/stunnel/run && \
-    sed -i '2iUSERID=\1001' /etc/cont-init.d/userconf
+    sed -i '2iUSERID=\1001' /etc/cont-init.d/userconf && \
+    echo "for f in \$(find ~/.rstudio -name '*.env'); do for USER_PERSISTED_VAR in \${USER_PERSISTED_VARS}; do sed -i \"/\$USER_PERSISTED_VAR/d\" \$f; done; done" >> /etc/cont-init.d/userconf
 
 ADD user_spark_config.yml /etc/skel/.spark_config.yml
 ADD Rprofile.user /etc/skel/.Rprofile
