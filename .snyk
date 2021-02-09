@@ -1,0 +1,20 @@
+version: v1.13.5
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-DEBIAN10-SYSTEMD-345386:
+    - '*':
+        reason: systemd services in this image do not use the DynamicUser property affected 
+        expires: 2021-05-08T00:00:00.000Z
+  SNYK-DEBIAN10-SYSTEMD-345391:
+    - '*':
+        reason: systemd services in this image do not use the DynamicUser property affected 
+        expires: 2021-05-08T00:00:00.000Z
+   SNYK-DEBIAN10-SYSTEMD-346788:
+    - '*':
+        reason: no cleartext passwords present during the execution of this image 
+        expires: 2021-05-08T00:00:00.000Z
+   SNYK-DEBIAN10-VIM-540297:
+    - '*':
+        reason: no remediation available 
+        expires: 2021-05-08T00:00:00.000Z
+ 
