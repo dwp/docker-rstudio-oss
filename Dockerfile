@@ -38,12 +38,19 @@ ENV SPARK_HOME /usr/local/spark
 ENV SPARK_OPTS --driver-java-options=-Xms1024M --driver-java-options=-Xmx4096M --driver-java-options=-Dlog4j.logLevel=info
 
 RUN R -e "install.packages('sparklyr', repos='http://cran.rstudio.com/', dependencies=T)"
+RUN PACKAGES_ARR=($${R_DEPS}// / });\
+    PCK=""\
+    for i in "$${PACKAGES_ARR[@]}"\
+    do: \
+        PCK="$${PCK}'$${i}',"\
+        done\
+    PCK="$${PCK%?}" # Remove last comma
 
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
-RUN for dep in ${R_DEPS}; do R -e "install.packages('${dep}')"; done
+# RUN for dep in ${R_DEPS}; do R -e "install.packages('${dep}')"; done
 
-RUN for pkg in ${R_PKGS}; do R -e "install.packages('${pkg}')"; done
+RUN R -e "install.packages(c(${PCK}), repos='https://cran.rstudio.com/')"
 
 # Be sure rstudio user has full access to their home directory
 RUN mkdir -p /home/rstudio && \
