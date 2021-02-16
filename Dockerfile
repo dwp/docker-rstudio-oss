@@ -16,8 +16,8 @@ rjson RJSONIO rmarkdown rmongodb RODBC scales shiny sqldf stringr tidyr timeDate
 aws.s3 aws.ec2metadata
 
 RUN apt-get -y update  && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
-    unixodbc-dev libbz2-dev libgsl-dev odbcinst libx11-dev mesa-common-dev libglu1-mesa-dev git-core s3fs \
-    gdal-bin proj-bin libgdal-dev libproj-dev libudunits2-dev libtcl8.6 libtk8.6 libgtk2.0-dev stunnel vim && \
+    unixodbc-dev libbz2-dev libgsl-dev odbcinst libx11-dev mesa-common-dev libglu1-mesa-dev git-core \
+    gdal-bin proj-bin libgdal-dev libproj-dev libudunits2-dev libtcl8.6 libtk8.6 libgtk2.0-dev stunnel vim libv8-dev && \
     apt-get clean
 
 RUN pip3 install --upgrade git-remote-codecommit
@@ -37,20 +37,12 @@ RUN cd /usr/local && ln -s spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERS
 ENV SPARK_HOME /usr/local/spark
 ENV SPARK_OPTS --driver-java-options=-Xms1024M --driver-java-options=-Xmx4096M --driver-java-options=-Dlog4j.logLevel=info
 
-RUN R -e "install.packages('sparklyr', repos='http://cran.rstudio.com/', dependencies=T)"
-RUN PACKAGES_ARR=($${R_DEPS}// / });\
-    PCK=""\
-    for i in "$${PACKAGES_ARR[@]}"\
-    do: \
-        PCK="$${PCK}'$${i}',"\
-        done\
-    PCK="$${PCK%?}" # Remove last comma
+COPY install_r_packages.sh /opt/
+RUN chmod +x /opt/install_r_packages.sh && /opt/install_r_packages.sh
 
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
-# RUN for dep in ${R_DEPS}; do R -e "install.packages('${dep}')"; done
-
-RUN R -e "install.packages(c(${PCK}), repos='https://cran.rstudio.com/')"
+COPY install_local_packages.r /opt/install_local_packages.r
 
 # Be sure rstudio user has full access to their home directory
 RUN mkdir -p /home/rstudio && \
@@ -69,6 +61,8 @@ RUN echo "#!/bin/bash" > /etc/cont-init.d/gen-certs && \
 
 RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container && \
     for var in ${USER_PERSISTED_VARS}; do echo "echo \"${var}=\${${var}}\" >> /usr/local/lib/R/etc/Renviron" >> /etc/cont-init.d/bootstrap_container; done && \
+    echo "echo \"r-libs-user=/home/\${USER}/.rpckg\" >> /etc/rstudio/rsession.conf" >> /etc/cont-init.d/bootstrap_container && \
+    echo "sed -i '/^R_LIBS_USER=/c\\R_LIBS_USER=/home/'\${USER}'/.rpckg' /usr/local/lib/R/etc/Renviron" >> /etc/cont-init.d/bootstrap_container && \
     echo "sed -i 's#REPLACEME#'\${EMR_URL}'#g' /etc/skel/.spark_config.yml" >> /etc/cont-init.d/bootstrap_container && \
     chmod +x /etc/cont-init.d/bootstrap_container && \
     sed -i 's?cp -r /home/rstudio .*?ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/userconf && \
@@ -85,6 +79,8 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
 \    \# special case for config files\n\
     cp -f /etc/skel/.spark_config.yml /home/$USER\n\
     chown $USER /home/$USER/.spark_config.yml\n\
+\   \# Install local packages\n\
+    Rscript /opt/install_local_packages.r\n\
     \# End of changes\n\
 ' /etc/cont-init.d/userconf && \
     chmod +x /etc/cont-init.d/userconf
