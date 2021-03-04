@@ -92,6 +92,7 @@ RUN mkdir -p /etc/services.d/stunnel/ && \
     echo "for f in \$(find /home/$USER/.rstudio -name '*.env'); do for USER_PERSISTED_VAR in \${USER_PERSISTED_VARS}; do sed -i \"/\$USER_PERSISTED_VAR/d\" \$f; done; done" >> /etc/cont-init.d/userconf
 
 ADD user_spark_config.yml /etc/skel/.spark_config.yml
-ADD Rprofile.user /etc/skel/.Rprofile
+ADD helpers.r /opt/helpers.r
+RUN echo "source(\"/opt/helpers.r\")" >> /usr/local/lib/R/etc/Rprofile.site
 
 CMD ["/init"]
