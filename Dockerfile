@@ -2,7 +2,6 @@ FROM rocker/tidyverse:3.6.3
 
 USER root
 
-ENV APACHE_SPARK_VERSION 2.4.4
 ENV HADOOP_VERSION 2.7
 
 ENV USER_PERSISTED_VARS AWS_CONTAINER_CREDENTIALS_RELATIVE_URI AWS_DEFAULT_REGION AWS_EXECUTION_ENV AWS_REGION \
@@ -21,21 +20,6 @@ RUN apt-get -y update  && apt-get install -y libcups2 libcups2-dev openjdk-11-jd
     apt-get clean
 
 RUN pip3 install --upgrade git-remote-codecommit
-
-RUN cd /tmp && \
-    wget --no-verbose https://downloads.cloudera.com/connectors/impala_odbc_2.5.41.1029/Debian/clouderaimpalaodbc_2.5.41.1029-2_amd64.deb && \
-    dpkg -i clouderaimpalaodbc_2.5.41.1029-2_amd64.deb && \
-    odbcinst -i -d -f /opt/cloudera/impalaodbc/Setup/odbcinst.ini
-
-RUN cd /tmp && \
-    wget -q https://archive.apache.org/dist/spark/spark-${APACHE_SPARK_VERSION}/spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz && \
-    tar xzf spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz -C /usr/local && \
-    rm spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
-
-RUN cd /usr/local && ln -s spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} spark
-
-ENV SPARK_HOME /usr/local/spark
-ENV SPARK_OPTS --driver-java-options=-Xms1024M --driver-java-options=-Xmx4096M --driver-java-options=-Dlog4j.logLevel=info
 
 COPY install_r_packages.sh /opt/
 RUN chmod +x /opt/install_r_packages.sh && /opt/install_r_packages.sh
