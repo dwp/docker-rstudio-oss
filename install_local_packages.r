@@ -17,7 +17,7 @@ should_install <- function(package){
         return(TRUE)
     }
 
-    tmp_extract_path = paste0("/tmp/pckg-install/")
+    tmp_extract_path <- paste0("/tmp/pckg-install/")
     dir.create(tmp_extract_path, showWarnings = FALSE)
     untar(package, files = paste0(package_name, "/DESCRIPTION"), exdir=tmp_extract_path)
 
