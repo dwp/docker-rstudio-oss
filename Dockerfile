@@ -11,12 +11,12 @@ ENV R_DEPS devtools bestglm glmnet stringr tidyr V8
 ENV R_PKGS bizdays boot cluster colorspace data.table deseasonalize DiagrammeR DiagrammeRsvg dplyr DT dyn feather \
 flexdashboard forcats forecast ggplot2 googleVis Hmisc htmltools htmlwidgets intervals kableExtra knitr lazyeval \
 leaflet lubridate magrittr manipulate maps networkD3 plotly plyr RColorBrewer readr reshape reshape2 reticulate \
-rjson RJSONIO rmarkdown rmongodb RODBC scales shiny sqldf  tidyr timeDate webshot xtable YaleToolkit zo \
+rjson RJSONIO rmarkdown rmongodb odbc scales shiny sqldf  tidyr timeDate webshot xtable YaleToolkit zo \
 aws.s3 aws.ec2metadata logging zip xlsx openxlsx svDialogs janitor rapportools leaflet.extras NCmisc ggalluvial \
 pacman bupaR distill blogdown pkgdown ggrepel
 
 RUN apt-get -y update  && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
-    unixodbc-dev libbz2-dev libgsl-dev odbcinst libx11-dev mesa-common-dev libglu1-mesa-dev git-core texlive-latex-base \
+    unixodbc libbz2-dev libgsl-dev odbcinst libx11-dev mesa-common-dev libglu1-mesa-dev git-core texlive-latex-base \
     texlive-fonts-recommended texlive-latex-recommended texlive-latex-extra gdal-bin proj-bin libgdal-dev libproj-dev \
     libudunits2-dev libtcl8.6 libtk8.6 libgtk2.0-dev stunnel vim libv8-dev && \
     apt-get clean
@@ -49,6 +49,7 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
     for var in ${USER_PERSISTED_VARS}; do echo "echo \"${var}=\${${var}}\" >> /usr/local/lib/R/etc/Renviron" >> /etc/cont-init.d/bootstrap_container; done && \
     echo "echo \"r-libs-user=/home/\${USER}/.rpckg\" >> /etc/rstudio/rsession.conf" >> /etc/cont-init.d/bootstrap_container && \
     echo "sed -i '/^R_LIBS_USER=/c\\R_LIBS_USER=/home/'\${USER}'/.rpckg' /usr/local/lib/R/etc/Renviron" >> /etc/cont-init.d/bootstrap_container && \
+    echo "sed -i 's#HOST=#HOST='\${EMR_URL}'#g' /etc/odbc.ini" >> /etc/cont-init.d/bootstrap_container && \
     echo "sed -i 's#REPLACEME#'\${EMR_URL}'#g' /etc/skel/.spark_config.yml" >> /etc/cont-init.d/bootstrap_container && \
     chmod +x /etc/cont-init.d/bootstrap_container && \
     sed -i 's?cp -r /home/rstudio .*?ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/userconf && \
@@ -75,10 +76,16 @@ RUN mkdir -p /etc/services.d/stunnel/ && \
     echo '#!/bin/bash' > /etc/services.d/stunnel/run && \
     echo 'exec stunnel' >> /etc/services.d/stunnel/run && \
     sed -i '2iUSERID=\1001' /etc/cont-init.d/userconf && \
-    echo "for f in \$(find /home/$USER/.rstudio -name '*.env'); do for USER_PERSISTED_VAR in \${USER_PERSISTED_VARS}; do sed -i \"/\$USER_PERSISTED_VAR/d\" \$f; done; done" >> /etc/cont-init.d/userconf
+    echo "for f in \$(find /home/\$USER/.rstudio -name '*.env'); do for USER_PERSISTED_VAR in \${USER_PERSISTED_VARS}; do sed -i \"/\$USER_PERSISTED_VAR/d\" \$f; done; done" >> /etc/cont-init.d/userconf
 
 ADD user_spark_config.yml /etc/skel/.spark_config.yml
 ADD helpers.r /opt/helpers.r
 RUN echo "source(\"/opt/helpers.r\")" >> /usr/local/lib/R/etc/Rprofile.site
+
+ADD amazonhiveodbc_2.6.9.1009-2_amd64.deb /opt/dataworks/hiveodbc.deb
+RUN dpkg -i /opt/dataworks/hiveodbc.deb \
+    && rm -rf /opt/dataworks/hiveodbc.deb
+
+COPY odbc*.ini /etc/
 
 CMD ["/init"]

@@ -7,3 +7,7 @@ get_spark <- function(){
     sparklyr::spark_connect(method = "livy", version = Sys.getenv("SPARK_VERSION", unset="2.4.4"), config = conf)
 }
 
+
+get_hive <- function(){
+    DBI::dbConnect(odbc::odbc(), dsn="DataWorks-Hive", UID=Sys.getenv("USER"), PWD=Sys.getenv("JWT_TOKEN"))
+}
