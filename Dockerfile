@@ -5,7 +5,7 @@ USER root
 ENV HADOOP_VERSION 2.7
 
 ENV USER_PERSISTED_VARS AWS_CONTAINER_CREDENTIALS_RELATIVE_URI AWS_DEFAULT_REGION AWS_EXECUTION_ENV AWS_REGION \
-    ECS_CONTAINER_METADATA_URI S3_BUCKET USER KMS_HOME KMS_SHARED EMR_HOST_NAME HTTP_PROXY HTTPS_PROXY NO_PROXY http_proxy https_proxy no_proxy JWT_TOKEN SPARK_VERSION S3_HOME_PATH
+    ECS_CONTAINER_METADATA_URI S3_BUCKET USER KMS_HOME KMS_SHARED HTTP_PROXY HTTPS_PROXY NO_PROXY http_proxy https_proxy no_proxy JWT_TOKEN SPARK_VERSION S3_HOME_PATH
 
 ENV R_DEPS devtools bestglm glmnet stringr tidyr V8
 ENV R_PKGS bizdays boot cluster colorspace data.table deseasonalize DiagrammeR DiagrammeRsvg dplyr DT dyn feather \
@@ -49,8 +49,8 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
     for var in ${USER_PERSISTED_VARS}; do echo "echo \"${var}=\${${var}}\" >> /usr/local/lib/R/etc/Renviron" >> /etc/cont-init.d/bootstrap_container; done && \
     echo "echo \"r-libs-user=/home/\${USER}/.rpckg\" >> /etc/rstudio/rsession.conf" >> /etc/cont-init.d/bootstrap_container && \
     echo "sed -i '/^R_LIBS_USER=/c\\R_LIBS_USER=/home/'\${USER}'/.rpckg' /usr/local/lib/R/etc/Renviron" >> /etc/cont-init.d/bootstrap_container && \
-    echo "sed -i 's#HOST=#HOST='\${EMR_URL}'#g' /etc/odbc.ini" >> /etc/cont-init.d/bootstrap_container && \
-    echo "sed -i 's#REPLACEME#'\${EMR_URL}'#g' /etc/skel/.spark_config.yml" >> /etc/cont-init.d/bootstrap_container && \
+    echo "sed -i 's#HOST=#HOST='\${EMR_HOST_NAME}'#g' /etc/odbc.ini" >> /etc/cont-init.d/bootstrap_container && \
+    echo "sed -i 's#REPLACEME#'\${LIVY_URL}'#g' /etc/skel/.spark_config.yml" >> /etc/cont-init.d/bootstrap_container && \
     chmod +x /etc/cont-init.d/bootstrap_container && \
     sed -i 's?cp -r /home/rstudio .*?ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/userconf && \
     sed -i '/useradd -m $USER -u $USERID/,/mkdir/c\
