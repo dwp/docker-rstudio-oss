@@ -80,7 +80,8 @@ RUN mkdir -p /etc/services.d/stunnel/ && \
 
 ADD user_spark_config.yml /etc/skel/.spark_config.yml
 ADD helpers.r /opt/helpers.r
-RUN echo "source(\"/opt/helpers.r\")" >> /usr/local/lib/R/etc/Rprofile.site
+ADD init.r /opt/init.r
+RUN echo "source(\"/opt/init.r\");source(\"/opt/helpers.r\");" >> /usr/local/lib/R/etc/Rprofile.site
 
 ADD amazonhiveodbc_2.6.9.1009-2_amd64.deb /opt/dataworks/hiveodbc.deb
 RUN dpkg -i /opt/dataworks/hiveodbc.deb \
