@@ -40,7 +40,7 @@ for (pck_file in packages) {
     untar(pckg_path, exdir = tmp_work_path)
     extracted_name <- stringr::str_replace(pck_file, "(.*?)\\..*$", replacement = "\\1")
     devtools::document(paste0(tmp_work_path, extracted_name))
-    install.packages(paste0(tmp_work_path, extracted_name), repos = NULL, lib = USER_LIB_PATH)
+    install.packages(paste0(tmp_work_path, extracted_name), repos = NULL, lib = USER_LIB_PATH, INSTALL_opts = '--no-lock')
   }
 }
 
