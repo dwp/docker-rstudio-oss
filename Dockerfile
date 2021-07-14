@@ -7,16 +7,16 @@ ENV HADOOP_VERSION 2.7
 ENV USER_PERSISTED_VARS AWS_CONTAINER_CREDENTIALS_RELATIVE_URI AWS_DEFAULT_REGION AWS_EXECUTION_ENV AWS_REGION \
     ECS_CONTAINER_METADATA_URI S3_BUCKET USER KMS_HOME KMS_SHARED HTTP_PROXY HTTPS_PROXY NO_PROXY http_proxy https_proxy no_proxy JWT_TOKEN SPARK_VERSION S3_HOME_PATH
 
-ENV R_DEPS devtools bestglm glmnet stringr tidyr V8
+ENV R_DEPS devtools bestglm glmnet stringr tidyr V8 dplyr
 ENV R_PKGS bizdays boot cluster colorspace data.table deseasonalize DiagrammeR DiagrammeRsvg dplyr DT dyn feather \
 flexdashboard forcats forecast ggplot2 googleVis Hmisc htmltools htmlwidgets intervals kableExtra knitr lazyeval \
 leaflet lubridate magrittr manipulate maps networkD3 plotly plyr RColorBrewer readr reshape reshape2 reticulate \
-rjson RJSONIO rmarkdown rmongodb odbc scales shiny sqldf timeDate webshot xtable YaleToolkit zo \
+rjson RJSONIO rmarkdown rmongodb odbc scales shiny sqldf timeDate webshot xtable YaleToolkit \
 aws.s3 aws.ec2metadata logging zip xlsx openxlsx svDialogs janitor rapportools leaflet.extras NCmisc ggalluvial \
 pacman bupaR distill blogdown pkgdown ggrepel rms filesstrings cowplot anytime flexdashboard dygraphs ISOweek gdata \
 Benchmarking DiceKriging DiceOptim eventdataR formattable ggiraph gtools heuristicsmineR lhs maditr NLP pheatmap \
-processanimateR processmapR processmonitorR qdap RColourBrewer readxl rgdal shinydashboard syuzhet textclean \
-textreuse tictoc tidytext TM topicmodels wordcloud xesreadR
+processanimateR processmapR processmonitR qdap RColourBrewer readxl rgdal shinydashboard syuzhet textclean \
+textreuse tictoc tidytext TM topicmodels wordcloud xesreadR sparklyr
 
 
 RUN apt-get -y update  && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
