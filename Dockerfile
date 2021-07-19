@@ -16,14 +16,13 @@ aws.s3 aws.ec2metadata logging zip xlsx openxlsx svDialogs janitor rapportools l
 pacman bupaR distill blogdown pkgdown ggrepel rms filesstrings cowplot anytime flexdashboard dygraphs ISOweek gdata \
 Benchmarking DiceKriging DiceOptim eventdataR formattable ggiraph gtools heuristicsmineR lhs maditr NLP pheatmap \
 processanimateR processmapR processmonitR qdap RColourBrewer readxl rgdal shinydashboard syuzhet textclean \
-textreuse tictoc tidytext TM topicmodels wordcloud xesreadR sparklyr stringi PM4Py rsvg gifski RQuantLib magick SGP
+textreuse tictoc tidytext TM topicmodels wordcloud xesreadR sparklyr stringi pm4py purrr
 
 
 RUN apt-get -y update  && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
     unixodbc libbz2-dev libgsl-dev odbcinst libx11-dev mesa-common-dev libglu1-mesa-dev git-core texlive-latex-base \
     texlive-fonts-recommended texlive-latex-recommended texlive-latex-extra gdal-bin proj-bin libgdal-dev libproj-dev \
-    libudunits2-dev libtcl8.6 libtk8.6 libgtk2.0-dev stunnel vim libv8-dev librsvg2-dev libmagick++-dev libavformat-dev \
-    libpoppler-cpp-dev && \
+    libudunits2-dev libtcl8.6 libtk8.6 libgtk2.0-dev stunnel vim libv8-dev \
     apt-get clean
 
 RUN pip3 install --upgrade git-remote-codecommit
