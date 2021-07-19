@@ -11,18 +11,19 @@ ENV R_DEPS devtools bestglm glmnet stringr tidyr V8 dplyr
 ENV R_PKGS bizdays boot cluster colorspace data.table deseasonalize DiagrammeR DiagrammeRsvg dplyr DT dyn feather \
 flexdashboard forcats forecast ggplot2 googleVis Hmisc htmltools htmlwidgets intervals kableExtra knitr lazyeval \
 leaflet lubridate magrittr manipulate maps networkD3 plotly plyr RColorBrewer readr reshape reshape2 reticulate \
-rjson RJSONIO rmarkdown rmongodb odbc scales shiny sqldf timeDate webshot xtable YaleToolkit zoo \
+rjson RJSONIO rmarkdown odbc scales shiny sqldf timeDate webshot xtable YaleToolkit zoo \
 aws.s3 aws.ec2metadata logging zip xlsx openxlsx svDialogs janitor rapportools leaflet.extras NCmisc ggalluvial \
 pacman bupaR distill blogdown pkgdown ggrepel rms filesstrings cowplot anytime flexdashboard dygraphs ISOweek gdata \
 Benchmarking DiceKriging DiceOptim eventdataR formattable ggiraph gtools heuristicsmineR lhs maditr NLP pheatmap \
 processanimateR processmapR processmonitR qdap RColourBrewer readxl rgdal shinydashboard syuzhet textclean \
-textreuse tictoc tidytext TM topicmodels wordcloud xesreadR sparklyr
+textreuse tictoc tidytext TM topicmodels wordcloud xesreadR sparklyr stringi PM4Py rsvg gifski RQuantLib magick SGP
 
 
 RUN apt-get -y update  && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
     unixodbc libbz2-dev libgsl-dev odbcinst libx11-dev mesa-common-dev libglu1-mesa-dev git-core texlive-latex-base \
     texlive-fonts-recommended texlive-latex-recommended texlive-latex-extra gdal-bin proj-bin libgdal-dev libproj-dev \
-    libudunits2-dev libtcl8.6 libtk8.6 libgtk2.0-dev stunnel vim libv8-dev && \
+    libudunits2-dev libtcl8.6 libtk8.6 libgtk2.0-dev stunnel vim libv8-dev librsvg2-dev libmagick++-dev libavformat-dev \
+    libpoppler-cpp-dev && \
     apt-get clean
 
 RUN pip3 install --upgrade git-remote-codecommit
