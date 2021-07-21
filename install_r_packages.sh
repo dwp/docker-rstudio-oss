@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+# pin sparklyr version to 1.6.2
+R -e "install.packages('sparklyr', version = '1.6.2', repos='http://cran.rstudio.com/', dependencies=T, Ncpus=parallel::detectCores(), quiet=TRUE)"
+
 PCK=""
 for i in ${R_DEPS[@]}; do
     PCK="${PCK}'${i}',"; 
