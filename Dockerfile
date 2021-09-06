@@ -17,7 +17,7 @@ pacman bupaR distill blogdown pkgdown ggrepel rms filesstrings cowplot anytime f
 Benchmarking DiceKriging DiceOptim eventdataR formattable ggiraph gtools heuristicsmineR lhs maditr NLP pheatmap \
 processanimateR processmapR processmonitR qdap RColorBrewer readxl rgdal shinydashboard syuzhet textclean \
 textreuse tictoc tidytext tm topicmodels wordcloud xesreadR stringi pm4py purrr markovchain factoextra ggfortify \
-ukbabynames BAMMtools ggwordcloud samplingbook
+ukbabynames BAMMtools ggwordcloud samplingbook labourR RSNNS brnn grnn
 
 
 RUN apt-get --allow-releaseinfo-change update && apt-get -y update && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
