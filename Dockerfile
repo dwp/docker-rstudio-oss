@@ -17,7 +17,7 @@ pacman bupaR distill blogdown pkgdown ggrepel rms filesstrings cowplot anytime f
 Benchmarking DiceKriging DiceOptim eventdataR formattable ggiraph gtools heuristicsmineR lhs maditr NLP pheatmap \
 processanimateR processmapR processmonitR qdap RColorBrewer readxl rgdal shinydashboard syuzhet textclean \
 textreuse tictoc tidytext tm topicmodels wordcloud xesreadR stringi pm4py purrr markovchain factoextra ggfortify \
-ukbabynames BAMMtools ggwordcloud samplingbook labourR RSNNS brnn grnn
+ukbabynames BAMMtools ggwordcloud samplingbook labourR RSNNS brnn grnn ggraph
 
 
 RUN apt-get --allow-releaseinfo-change update && apt-get -y update && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
@@ -91,6 +91,14 @@ RUN echo "source(\"/opt/init.r\");source(\"/opt/helpers.r\");" >> /usr/local/lib
 ADD amazonhiveodbc_2.6.9.1009-2_amd64.deb /opt/dataworks/hiveodbc.deb
 RUN dpkg -i /opt/dataworks/hiveodbc.deb \
     && rm -rf /opt/dataworks/hiveodbc.deb
+
+RUN cd /opt/dataworks && wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.1/hadoop-3.3.1-aarch64.tar.gz && \
+    wget https://dlcdn.apache.org/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz && \
+    tar -xzvf apache-hive-2.3.9-bin.tar.gz && rm -f apache-hive-2.3.9-bin.tar.gz && \
+    tar -xzvf hadoop-3.3.1-aarch64.tar.gz && rm -f hadoop-3.3.1-aarch64.tar.gz && \
+    echo "export HADOOP_HOME=\"/opt/dataworks/hadoop-3.3.1\"" >> /etc/skel/.bashrc && \
+    echo "export JAVA_HOME=\"/usr/lib/jvm/java-11-openjdk-amd64\"" >> /etc/skel/.bashrc && \
+    echo "export PATH=\"/opt/dataworks/apache-hive-2.3.9-bin/bin/\":$PATH" >> /etc/skel/.bashrc
 
 COPY odbc*.ini /etc/
 
