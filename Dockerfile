@@ -92,9 +92,9 @@ ADD amazonhiveodbc_2.6.9.1009-2_amd64.deb /opt/dataworks/hiveodbc.deb
 RUN dpkg -i /opt/dataworks/hiveodbc.deb \
     && rm -rf /opt/dataworks/hiveodbc.deb
 
-RUN cd /opt/dataworks && wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.1/hadoop-3.3.1-aarch64.tar.gz && \
-    wget https://dlcdn.apache.org/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz && \
-    tar -xzvf apache-hive-2.3.9-bin.tar.gz && rm -f apache-hive-2.3.9-bin.tar.gz && \
+RUN cd /opt/dataworks && wget -q https://dlcdn.apache.org/hadoop/common/hadoop-3.3.1/hadoop-3.3.1-aarch64.tar.gz && \
+    wget -q https://dlcdn.apache.org/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz && \
+    tar -xzvf apache-hive-3.1.2-bin.tar.gz && rm -f apache-hive-3.1.2-bin.tar.gz && \
     tar -xzvf hadoop-3.3.1-aarch64.tar.gz && rm -f hadoop-3.3.1-aarch64.tar.gz && \
     echo "export HADOOP_HOME=\"/opt/dataworks/hadoop-3.3.1\"" >> /etc/skel/.bashrc && \
     echo "export JAVA_HOME=\"/usr/lib/jvm/java-11-openjdk-amd64\"" >> /etc/skel/.bashrc && \
