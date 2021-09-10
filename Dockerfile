@@ -59,7 +59,7 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
     echo "echo \"export HADOOP_HOME=\"/opt/dataworks/hadoop-3.3.1\" >> /etc/profile.d/rstudio.sh" >> /etc/cont-init.d/bootstrap_container && \
     echo "echo \"export JAVA_HOME=\"/usr/lib/jvm/java-11-openjdk-amd64\" >> /etc/profile.d/rstudio.sh" >> /etc/cont-init.d/bootstrap_container && \
     echo "echo \"alias run_beeline=\"/opt/dataworks/apache-hive-2.3.9-bin/bin/beeline -u jdbc:hive2://${EMR_HOST_NAME}:10000;AuthMech=6;delegationToken=${JWT_TOKEN}\" >> /etc/profile.d/rstudio.sh" >> /etc/cont-init.d/bootstrap_container && \
-    chmod +x /etc/cont-init.d/bootstrap_container && \
+    chmod +x /etc/cont-init.d/bootstrap_container && chmod +x /etc/profile.d/rstudio.sh \
     sed -i 's?cp -r /home/rstudio .*?ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/userconf && \
     sed -i '/useradd -m $USER -u $USERID/,/mkdir/c\
 \    \# Link S3 home directory instead of creating directory.\n\
