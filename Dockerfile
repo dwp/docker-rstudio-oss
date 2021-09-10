@@ -56,7 +56,11 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
     echo "sed -i '/^R_LIBS_USER=/c\\R_LIBS_USER=/home/'\${USER}'/.rpckg' /usr/local/lib/R/etc/Renviron" >> /etc/cont-init.d/bootstrap_container && \
     echo "sed -i 's#HOST=#HOST='\${EMR_HOST_NAME}'#g' /etc/odbc.ini" >> /etc/cont-init.d/bootstrap_container && \
     echo "sed -i 's#REPLACEME#'\${LIVY_URL}'#g' /etc/skel/.spark_config.yml" >> /etc/cont-init.d/bootstrap_container && \
-    chmod +x /etc/cont-init.d/bootstrap_container && \
+    echo "#!/usr/bin/bash" > /etc/profile.d/rstudio.sh && \
+    echo "echo \"export HADOOP_HOME=\"/opt/dataworks/hadoop-3.3.1\"\" >> /etc/profile.d/rstudio.sh" >> /etc/cont-init.d/bootstrap_container && \
+    echo "echo \"export JAVA_HOME=\"/usr/lib/jvm/java-11-openjdk-amd64\"\" >> /etc/profile.d/rstudio.sh" >> /etc/cont-init.d/bootstrap_container && \
+    echo "alias run_beeline=\"/opt/dataworks/apache-hive-2.3.9-bin/bin/beeline -u jdbc:hive2://${EMR_HOST_NAME}:10000;AuthMech=6;delegationToken=${JWT_TOKEN}\"" >> /etc/profile.d/rstudio.sh && \
+    chmod +x /etc/cont-init.d/bootstrap_container && chmod +x /etc/profile.d/rstudio.sh && \
     sed -i 's?cp -r /home/rstudio .*?ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/userconf && \
     sed -i '/useradd -m $USER -u $USERID/,/mkdir/c\
 \    \# Link S3 home directory instead of creating directory.\n\
@@ -91,6 +95,11 @@ RUN echo "source(\"/opt/init.r\");source(\"/opt/helpers.r\");" >> /usr/local/lib
 ADD amazonhiveodbc_2.6.9.1009-2_amd64.deb /opt/dataworks/hiveodbc.deb
 RUN dpkg -i /opt/dataworks/hiveodbc.deb \
     && rm -rf /opt/dataworks/hiveodbc.deb
+
+RUN cd /opt/dataworks && wget -q https://dlcdn.apache.org/hadoop/common/hadoop-3.3.1/hadoop-3.3.1-aarch64.tar.gz && \
+    wget -q https://dlcdn.apache.org/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz && \
+    tar -xzf apache-hive-3.1.2-bin.tar.gz && rm -f apache-hive-3.1.2-bin.tar.gz && \
+    tar -xzf hadoop-3.3.1-aarch64.tar.gz && rm -f hadoop-3.3.1-aarch64.tar.gz
 
 COPY odbc*.ini /etc/
 
