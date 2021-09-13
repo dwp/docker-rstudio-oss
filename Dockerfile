@@ -17,7 +17,7 @@ pacman bupaR distill blogdown pkgdown ggrepel rms filesstrings cowplot anytime f
 Benchmarking DiceKriging DiceOptim eventdataR formattable ggiraph gtools heuristicsmineR lhs maditr NLP pheatmap \
 processanimateR processmapR processmonitR qdap RColorBrewer readxl rgdal shinydashboard syuzhet textclean \
 textreuse tictoc tidytext tm topicmodels wordcloud xesreadR stringi pm4py purrr markovchain factoextra ggfortify \
-ukbabynames BAMMtools ggwordcloud samplingbook labourR RSNNS brnn grnn
+ukbabynames BAMMtools ggwordcloud samplingbook labourR RSNNS brnn grnn ggraph
 
 
 RUN apt-get --allow-releaseinfo-change update && apt-get -y update && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
@@ -59,7 +59,7 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
     echo "#!/usr/bin/bash" > /etc/profile.d/rstudio.sh && \
     echo "echo \"export HADOOP_HOME=\"/opt/dataworks/hadoop-3.3.1\"\" >> /etc/profile.d/rstudio.sh" >> /etc/cont-init.d/bootstrap_container && \
     echo "echo \"export JAVA_HOME=\"/usr/lib/jvm/java-11-openjdk-amd64\"\" >> /etc/profile.d/rstudio.sh" >> /etc/cont-init.d/bootstrap_container && \
-    echo "alias run_beeline=\"/opt/dataworks/apache-hive-2.3.9-bin/bin/beeline -u jdbc:hive2://${EMR_HOST_NAME}:10000;AuthMech=6;delegationToken=${JWT_TOKEN}\"" >> /etc/profile.d/rstudio.sh && \
+    echo "echo \"alias run_beeline=\"/opt/dataworks/apache-hive-3.1.2-bin/bin/beeline -n \"$(echo ${USER})\" -p \"$(echo ${JWT_TOKEN})\" -u jdbc:hive2://${EMR_HOST_NAME}:10000;AuthMech=6;delegationToken=${JWT_TOKEN}\" >> /etc/profile.d/rstudio.sh\"" >> /etc/cont-init.d/bootstrap_container && \
     chmod +x /etc/cont-init.d/bootstrap_container && chmod +x /etc/profile.d/rstudio.sh && \
     sed -i 's?cp -r /home/rstudio .*?ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/userconf && \
     sed -i '/useradd -m $USER -u $USERID/,/mkdir/c\
