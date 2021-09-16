@@ -17,7 +17,7 @@ pacman bupaR distill blogdown pkgdown ggrepel rms filesstrings cowplot anytime f
 Benchmarking DiceKriging DiceOptim eventdataR formattable ggiraph gtools heuristicsmineR lhs maditr NLP pheatmap \
 processanimateR processmapR processmonitR qdap RColorBrewer readxl rgdal shinydashboard syuzhet textclean \
 textreuse tictoc tidytext tm topicmodels wordcloud xesreadR stringi pm4py purrr markovchain factoextra ggfortify \
-ukbabynames BAMMtools ggwordcloud samplingbook labourR RSNNS brnn grnn ggraph
+ukbabynames BAMMtools ggwordcloud samplingbook labourR RSNNS brnn grnn ggraph glmmTMB
 
 
 RUN apt-get --allow-releaseinfo-change update && apt-get -y update && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
@@ -56,10 +56,10 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
     echo "sed -i '/^R_LIBS_USER=/c\\R_LIBS_USER=/home/'\${USER}'/.rpckg' /usr/local/lib/R/etc/Renviron" >> /etc/cont-init.d/bootstrap_container && \
     echo "sed -i 's#HOST=#HOST='\${EMR_HOST_NAME}'#g' /etc/odbc.ini" >> /etc/cont-init.d/bootstrap_container && \
     echo "sed -i 's#REPLACEME#'\${LIVY_URL}'#g' /etc/skel/.spark_config.yml" >> /etc/cont-init.d/bootstrap_container && \
-    echo "#!/bin/bash" > /etc/profile.d/rstudio.sh && \
-    echo "export HADOOP_HOME='/opt/dataworks/hadoop-3.3.1'" >> /etc/profile.d/beeline.sh && \
-    echo "export JAVA_HOME='/usr/lib/jvm/java-11-openjdk-amd64'" >> /etc/profile.d/beeline.sh && \
-    echo "echo \"alias run_beeline='/opt/dataworks/apache-hive-3.1.2-bin/bin/beeline -n "\${USER}" -p '"\""'\${JWT_TOKEN}'"\""' -u jdbc:hive2://"\${EMR_HOST_NAME}":10000/default;'\" >> /etc/profile.d/beeline.sh" >> /etc/cont-init.d/bootstrap_container && \
+    echo "#!/bin/bash" > /etc/profile.d/beeline.sh && \
+    echo "echo \"export HADOOP_HOME=\"/opt/dataworks/hadoop-3.3.1\"\" >> /etc/profile.d/beeline.sh" >> /etc/cont-init.d/bootstrap_container && \
+    echo "echo \"export JAVA_HOME=\"/usr/lib/jvm/java-11-openjdk-amd64\"\" >> /etc/profile.d/beeline.sh" >> /etc/cont-init.d/bootstrap_container && \
+    echo "echo \"alias run_beeline='/opt/dataworks/apache-hive-3.1.2-bin/bin/beeline -n "\${USER}" -p '"\""'\${JWT_TOKEN}'"\""' -u jdbc:hive2://\$(cut -d'=' -f2<<<\$(grep HOST /etc/odbc.ini)):10000/default;'\">> /etc/profile.d/beeline.sh" >> /etc/cont-init.d/bootstrap_container && \
     chmod +x /etc/cont-init.d/bootstrap_container && chmod +x /etc/profile.d/beeline.sh && \
     sed -i 's?cp -r /home/rstudio .*?ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/userconf && \
     sed -i '/useradd -m $USER -u $USERID/,/mkdir/c\
