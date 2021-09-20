@@ -59,7 +59,7 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
     echo "#!/bin/bash" > /etc/profile.d/beeline.sh && \
     echo "echo \"export HADOOP_HOME=\"/opt/dataworks/hadoop-3.3.1\"\" >> /etc/profile.d/beeline.sh" >> /etc/cont-init.d/bootstrap_container && \
     echo "echo \"export JAVA_HOME=\"/usr/lib/jvm/java-11-openjdk-amd64\"\" >> /etc/profile.d/beeline.sh" >> /etc/cont-init.d/bootstrap_container && \
-    echo "echo \"alias run_beeline='/opt/dataworks/apache-hive-3.1.2-bin/bin/beeline -n "\${USER}" -p '"\""'\${JWT_TOKEN}'"\""' -u jdbc:hive2://\$(cut -d'=' -f2<<<\$(grep HOST /etc/odbc.ini)):10000/default;'\">> /etc/profile.d/beeline.sh" >> /etc/cont-init.d/bootstrap_container && \
+    echo "echo \"alias run_beeline='/opt/dataworks/apache-hive-3.1.2-bin/bin/beeline -n "\${USER}" -p '"\""'\${JWT_TOKEN}'"\""' -u jdbc:hive2://\$(cut -d'=' -f2<<<\$(grep HOST /etc/odbc.ini)):10000/default'\">> /etc/profile.d/beeline.sh" >> /etc/cont-init.d/bootstrap_container && \
     chmod +x /etc/cont-init.d/bootstrap_container && chmod +x /etc/profile.d/beeline.sh && \
     sed -i 's?cp -r /home/rstudio .*?ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/userconf && \
     sed -i '/useradd -m $USER -u $USERID/,/mkdir/c\
