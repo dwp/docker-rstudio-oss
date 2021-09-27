@@ -36,3 +36,8 @@ There is an ODBC PDF is available in the R-Studio image at /opt/amazon/hiveodbc/
 R Studio can connect via Livy to Spark using the library(sparklyr) package.
 Note that the connection details are in the [helpers.r](https://github.com/dwp/docker-rstudio-oss/blob/master/helpers.r).
 
+## CI
+
+There is a GitHub Actions pipeline in the DWP organisation which builds and deploys the image to docker hub. The image is then mirrored to ECS via the [mirror images pipeline](https://ci.dataworks.dwp.gov.uk/teams/dataworks/pipelines/mirror-docker-images) in AWS Concourse.
+
+There is also a pipeline for this repo which creates the ECS repository in mgmt and mgmt-dev.
