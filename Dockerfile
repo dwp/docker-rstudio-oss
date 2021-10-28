@@ -17,8 +17,7 @@ pacman bupaR distill blogdown pkgdown ggrepel rms filesstrings cowplot anytime f
 Benchmarking DiceKriging DiceOptim eventdataR formattable ggiraph gtools heuristicsmineR lhs maditr NLP pheatmap \
 processanimateR processmapR processmonitR qdap RColorBrewer readxl rgdal shinydashboard syuzhet textclean \
 textreuse tictoc tidytext tm topicmodels wordcloud xesreadR stringi pm4py purrr markovchain factoextra ggfortify \
-ukbabynames BAMMtools ggwordcloud samplingbook labourR RSNNS brnn grnn ggraph glmmTMB
-
+ukbabynames BAMMtools ggwordcloud samplingbook labourR RSNNS brnn grnn ggraph glmmTMB UpSetR
 
 RUN apt-get --allow-releaseinfo-change update && apt-get -y update && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
     unixodbc libbz2-dev libgsl-dev odbcinst libx11-dev mesa-common-dev libglu1-mesa-dev git-core texlive-latex-base \
@@ -96,10 +95,10 @@ ADD amazonhiveodbc_2.6.9.1009-2_amd64.deb /opt/dataworks/hiveodbc.deb
 RUN dpkg -i /opt/dataworks/hiveodbc.deb \
     && rm -rf /opt/dataworks/hiveodbc.deb
 
-RUN cd /opt/dataworks && wget -q https://dlcdn.apache.org/hadoop/common/hadoop-3.3.1/hadoop-3.3.1-aarch64.tar.gz && \
-    wget -q https://dlcdn.apache.org/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz && \
-    tar -xzf apache-hive-3.1.2-bin.tar.gz && rm -f apache-hive-3.1.2-bin.tar.gz && \
-    tar -xzf hadoop-3.3.1-aarch64.tar.gz && rm -f hadoop-3.3.1-aarch64.tar.gz
+RUN cd /opt/dataworks && wget -q "https://downloads.apache.org/hadoop/common/hadoop-3.3.1/hadoop-3.3.1-aarch64.tar.gz" \
+    && wget -q "https://downloads.apache.org/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz" \
+    && tar -xzf "apache-hive-3.1.2-bin.tar.gz" && rm -f "apache-hive-3.1.2-bin.tar.gz" \
+    && tar -xzf "hadoop-3.3.1-aarch64.tar.gz" && rm -f "hadoop-3.3.1-aarch64.tar.gz"
 
 COPY odbc*.ini /etc/
 
