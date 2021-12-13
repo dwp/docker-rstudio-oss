@@ -18,7 +18,7 @@ Benchmarking DiceKriging DiceOptim eventdataR formattable ggiraph gtools heurist
 processanimateR processmapR processmonitR qdap RColorBrewer readxl rgdal shinydashboard syuzhet textclean \
 textreuse tictoc tidytext tm topicmodels wordcloud xesreadR stringi pm4py purrr markovchain factoextra ggfortify \
 ukbabynames BAMMtools ggwordcloud samplingbook labourR RSNNS brnn grnn ggraph glmmTMB UpSetR CausalImpact bsts Boom \
-BoomSpikeSlab dfply dplython
+BoomSpikeSlab
 
 RUN apt-get --allow-releaseinfo-change update && apt-get -y update && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
     unixodbc libbz2-dev libgsl-dev odbcinst libx11-dev mesa-common-dev libglu1-mesa-dev git-core texlive-latex-base \
