@@ -1,4 +1,4 @@
-FROM rocker/latest
+FROM rocker/tidyverse:latest
 
 USER root
 
