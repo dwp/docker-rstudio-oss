@@ -1,4 +1,4 @@
-FROM rocker/tidyverse:3.6.3
+FROM rocker/latest
 
 USER root
 
@@ -16,14 +16,15 @@ aws.s3 aws.ec2metadata logging zip xlsx openxlsx svDialogs janitor rapportools l
 pacman bupaR distill blogdown pkgdown ggrepel rms filesstrings cowplot anytime flexdashboard dygraphs ISOweek gdata \
 Benchmarking DiceKriging DiceOptim eventdataR formattable ggiraph gtools heuristicsmineR lhs maditr NLP pheatmap \
 processanimateR processmapR processmonitR qdap RColorBrewer readxl rgdal shinydashboard syuzhet textclean \
-textreuse tictoc tidytext tm topicmodels wordcloud xesreadR stringi pm4py purrr markovchain factoextra ggfortify \
+textreuse tictoc tidytext tm topicmodels wordcloud xesreadR stringi purrr markovchain factoextra ggfortify \
 ukbabynames BAMMtools ggwordcloud samplingbook labourR RSNNS brnn grnn ggraph glmmTMB UpSetR CausalImpact bsts Boom \
 BoomSpikeSlab
 
 RUN apt-get --allow-releaseinfo-change update && apt-get -y update && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
     unixodbc libbz2-dev libgsl-dev odbcinst libx11-dev mesa-common-dev libglu1-mesa-dev git-core texlive-latex-base \
     texlive-fonts-recommended texlive-latex-recommended texlive-latex-extra gdal-bin proj-bin libgdal-dev libproj-dev \
-    libudunits2-dev libtcl8.6 libtk8.6 libgtk2.0-dev stunnel vim libv8-dev && \
+    libudunits2-dev libtcl8.6 libtk8.6 libgtk2.0-dev stunnel vim libv8-dev libgmp-dev libmpfr-dev librsvg2-dev libpoppler-glib-dev cargo \
+    libquantlib0-dev libavfilter-dev libpoppler-cpp-dev libtesseract-dev libleptonica-dev tesseract-ocr-eng libmagick++-dev && \
     apt-get clean
 
 RUN pip3 install --upgrade git-remote-codecommit

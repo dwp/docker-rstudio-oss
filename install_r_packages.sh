@@ -31,6 +31,17 @@ do
     fi
 done
 
+# repeat check and exit failure if packages are missing
+for p in "${PKGS[@]}";
+do
+    # store only line 2 from the output
+    PKG_STATUS=$(R -q -e "find.package(\"${p}\", quiet=TRUE, verbose=TRUE)" | sed -n 2p)
+    if [ "${PKG_STATUS}" == "${PKG_FAILED_STATUS}" ]; then
+        # fail
+        exit 1
+    fi
+done
+
 # always leave `sparklyr` package as last step to stop it getting updated accidently as dependency for some other pkg
 # and pin sparklyr version to 1.6.2
 R -e "require(devtools); install_version('sparklyr', version = '1.6.2', repos='http://cran.rstudio.com/', dependencies=T, Ncpus=parallel::detectCores(), quiet=TRUE)"
