@@ -62,7 +62,7 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
     echo "echo \"export JAVA_HOME=\"/usr/lib/jvm/java-11-openjdk-amd64\"\" >> /etc/profile.d/beeline.sh" >> /etc/cont-init.d/bootstrap_container && \
     echo "echo \"alias run_beeline='/opt/dataworks/apache-hive-3.1.2-bin/bin/beeline -n "\${USER}" -p '"\""'\${JWT_TOKEN}'"\""' -u jdbc:hive2://\$(cut -d'=' -f2<<<\$(grep HOST /etc/odbc.ini)):10000/default'\">> /etc/profile.d/beeline.sh" >> /etc/cont-init.d/bootstrap_container && \
     chmod +x /etc/cont-init.d/bootstrap_container && chmod +x /etc/profile.d/beeline.sh && \
-    sed -i 's?cp -r /home/rstudio .*?ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/userconf && \
+    sed -i 's?cp -r /home/rstudio .*?ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/02_userconf && \
     sed -i '/useradd -m $USER -u $USERID/,/mkdir/c\
 \    \# Link S3 home directory instead of creating directory.\n\
     \# and add missing skeleton files\n\
@@ -79,13 +79,13 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
 \   \# Install local packages\n\
     Rscript /opt/install_local_packages.r\n\
     \# End of changes\n\
-' /etc/cont-init.d/userconf && \
-    chmod +x /etc/cont-init.d/userconf
+' /etc/cont-init.d/02_userconf && \
+    chmod +x /etc/cont-init.d/02_userconf
 
 RUN mkdir -p /etc/services.d/stunnel/ && \
     echo '#!/bin/bash' > /etc/services.d/stunnel/run && \
     echo 'exec stunnel' >> /etc/services.d/stunnel/run && \
-    sed -i '2iUSERID=\1001' /etc/cont-init.d/userconf && \
+    sed -i '2iUSERID=\1001' /etc/cont-init.d/02_userconf && \
     echo "for f in \$(find /home/\$USER/.rstudio -name '*.env'); do for USER_PERSISTED_VAR in \${USER_PERSISTED_VARS}; do sed -i \"/\$USER_PERSISTED_VAR/d\" \$f; done; done" >> /etc/cont-init.d/userconf
 
 ADD user_spark_config.yml /etc/skel/.spark_config.yml
