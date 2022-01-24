@@ -1,4 +1,4 @@
-FROM rocker/tidyverse:3.6.3
+FROM rocker/tidyverse:latest
 
 USER root
 
@@ -16,14 +16,15 @@ aws.s3 aws.ec2metadata logging zip xlsx openxlsx svDialogs janitor rapportools l
 pacman bupaR distill blogdown pkgdown ggrepel rms filesstrings cowplot anytime flexdashboard dygraphs ISOweek gdata \
 Benchmarking DiceKriging DiceOptim eventdataR formattable ggiraph gtools heuristicsmineR lhs maditr NLP pheatmap \
 processanimateR processmapR processmonitR qdap RColorBrewer readxl rgdal shinydashboard syuzhet textclean \
-textreuse tictoc tidytext tm topicmodels wordcloud xesreadR stringi pm4py purrr markovchain factoextra ggfortify \
+textreuse tictoc tidytext tm topicmodels wordcloud xesreadR stringi purrr markovchain factoextra ggfortify \
 ukbabynames BAMMtools ggwordcloud samplingbook labourR RSNNS brnn grnn ggraph glmmTMB UpSetR CausalImpact bsts Boom \
 BoomSpikeSlab
 
 RUN apt-get --allow-releaseinfo-change update && apt-get -y update && apt-get install -y libcups2 libcups2-dev openjdk-11-jdk systemd python3 python3-pip \
     unixodbc libbz2-dev libgsl-dev odbcinst libx11-dev mesa-common-dev libglu1-mesa-dev git-core texlive-latex-base \
     texlive-fonts-recommended texlive-latex-recommended texlive-latex-extra gdal-bin proj-bin libgdal-dev libproj-dev \
-    libudunits2-dev libtcl8.6 libtk8.6 libgtk2.0-dev stunnel vim libv8-dev && \
+    libudunits2-dev libtcl8.6 libtk8.6 libgtk2.0-dev stunnel vim libv8-dev libgmp-dev libmpfr-dev librsvg2-dev libpoppler-glib-dev cargo \
+    libquantlib0-dev libavfilter-dev libpoppler-cpp-dev libtesseract-dev libleptonica-dev tesseract-ocr-eng libmagick++-dev && \
     apt-get clean
 
 RUN pip3 install --upgrade git-remote-codecommit
@@ -61,7 +62,7 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
     echo "echo \"export JAVA_HOME=\"/usr/lib/jvm/java-11-openjdk-amd64\"\" >> /etc/profile.d/beeline.sh" >> /etc/cont-init.d/bootstrap_container && \
     echo "echo \"alias run_beeline='/opt/dataworks/apache-hive-3.1.2-bin/bin/beeline -n "\${USER}" -p '"\""'\${JWT_TOKEN}'"\""' -u jdbc:hive2://\$(cut -d'=' -f2<<<\$(grep HOST /etc/odbc.ini)):10000/default'\">> /etc/profile.d/beeline.sh" >> /etc/cont-init.d/bootstrap_container && \
     chmod +x /etc/cont-init.d/bootstrap_container && chmod +x /etc/profile.d/beeline.sh && \
-    sed -i 's?cp -r /home/rstudio .*?ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/userconf && \
+    sed -i 's?cp -r /home/rstudio .*?ln -s /mnt/s3fs/s3-home /home/\$USER?' /etc/cont-init.d/02_userconf && \
     sed -i '/useradd -m $USER -u $USERID/,/mkdir/c\
 \    \# Link S3 home directory instead of creating directory.\n\
     \# and add missing skeleton files\n\
@@ -78,13 +79,13 @@ RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/bootstrap_container &
 \   \# Install local packages\n\
     Rscript /opt/install_local_packages.r\n\
     \# End of changes\n\
-' /etc/cont-init.d/userconf && \
-    chmod +x /etc/cont-init.d/userconf
+' /etc/cont-init.d/02_userconf && \
+    chmod +x /etc/cont-init.d/02_userconf
 
 RUN mkdir -p /etc/services.d/stunnel/ && \
     echo '#!/bin/bash' > /etc/services.d/stunnel/run && \
     echo 'exec stunnel' >> /etc/services.d/stunnel/run && \
-    sed -i '2iUSERID=\1001' /etc/cont-init.d/userconf && \
+    sed -i '2iUSERID=\1001' /etc/cont-init.d/02_userconf && \
     echo "for f in \$(find /home/\$USER/.rstudio -name '*.env'); do for USER_PERSISTED_VAR in \${USER_PERSISTED_VARS}; do sed -i \"/\$USER_PERSISTED_VAR/d\" \$f; done; done" >> /etc/cont-init.d/userconf
 
 ADD user_spark_config.yml /etc/skel/.spark_config.yml
